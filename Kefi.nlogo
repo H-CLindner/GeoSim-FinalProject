@@ -4,12 +4,19 @@ patches-own [
   localSeeds
   globalSeeds
   regenerationCounter
+  cluster
+  visited
+]
+
+globals [
+  counter
 ]
 
 to setup
   clear-all
   ask patches
-    [initialize]
+    [initialize
+     set cluster nobody]
   reset-ticks
   end
 
@@ -49,6 +56,7 @@ to go
   [if patchState = 1
     [dispersal]]
   regenerate
+  find-clusters
   tick
 end
 
@@ -106,7 +114,59 @@ to regenerate
          [set regenerationCounter regenerationCounter - (lpiRegeneration + 1)]]]
 end
 
-;;regeneration of degrade patches with and without local postitive interaction
+to find-clusters
+  ask patches
+    [set cluster nobody]
+  loop [
+    ;; pick a random patch that isn't in a cluster yet
+    let seed one-of patches with [cluster = nobody and patchState = 1]
+    ;; if we can't find one, then we're done!
+    if seed = nobody
+    [ show-clusters
+      stop ]
+    ;; otherwise, make the patch the "leader" of a new cluster
+    ;; by assigning itself to its own cluster, then call
+    ;; grow-cluster to find the rest of the cluster
+    ask seed
+    [ set cluster self
+      grow-cluster ]
+  ]
+end
+
+to grow-cluster  ;; patch procedure
+  ask neighbors4 with [(cluster = nobody and patchState = 1) and
+    (pcolor = [pcolor] of myself)]
+  [ set cluster [cluster] of myself
+    grow-cluster ]
+end
+
+to show-clusters
+  set counter 0
+  let counter2 0
+  ask patches
+    [set plabel ""
+     set plabel-color green]
+  loop
+  [ ;; pick a random patch we haven't labeled yet
+    let p one-of patches with [plabel = "" and patchState = 1]
+    if p = nobody
+      [ stop ]
+    ;; give all patches in the chosen patch's cluster
+    ;; the same label
+    ask p
+    [ ask patches with [cluster = [cluster] of myself and patchState = 1]
+      [ set plabel counter ] ]
+    set counter2 0
+    loop[
+      let q one-of patches with [visited = 0 and plabel = counter]
+      if q = nobody [stop]
+      ask q [set visited 1]
+
+        set counter2 counter2 + 1
+    ] ;;hier ins array packen
+    set counter counter + 1 ]
+
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -159,7 +219,7 @@ BUTTON
 56
 NIL
 go
-T
+NIL
 1
 T
 OBSERVER
@@ -178,7 +238,7 @@ grazing-pressure
 grazing-pressure
 3
 50
-25.0
+28.0
 1
 1
 NIL
@@ -278,6 +338,17 @@ MONITOR
 322
 Degraded cells
 count patches with [pcolor = grey]
+17
+1
+11
+
+MONITOR
+731
+348
+847
+393
+number of clusters
+counter
 17
 1
 11
