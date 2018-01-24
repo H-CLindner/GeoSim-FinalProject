@@ -250,10 +250,10 @@ PENS
 "Degraded" 1.0 0 -7500403 true "" "plot count patches with [pcolor = grey]"
 
 MONITOR
-715
-219
-805
-264
+719
+234
+809
+279
 Occupied cells
 count patches with [pcolor = green]
 17
@@ -261,10 +261,10 @@ count patches with [pcolor = green]
 11
 
 MONITOR
-812
-218
-915
-263
+870
+246
+973
+291
 Unoccupied cells
 count patches with [pcolor = brown]
 17
@@ -272,10 +272,10 @@ count patches with [pcolor = brown]
 11
 
 MONITOR
-715
-277
-809
-322
+727
+366
+821
+411
 Degraded cells
 count patches with [pcolor = grey]
 17
