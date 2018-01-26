@@ -1,3 +1,7 @@
+extensions [
+ array
+]
+
 patches-own [
   patchState         ;;three states of patches (occupied, unoccupied, degraded)
   occupied-neighbors  ;; counts how many neighboring cells are occupied
@@ -10,6 +14,8 @@ patches-own [
 
 globals [
   counter
+  counter2
+  a
 ]
 
 to setup
@@ -57,6 +63,7 @@ to go
     [dispersal]]
   regenerate
   find-clusters
+  set a array:from-list n-values counter [0]
   tick
 end
 
@@ -142,7 +149,6 @@ end
 
 to show-clusters
   set counter 0
-  let counter2 0
   ask patches
     [set plabel ""
      set plabel-color green]
@@ -154,18 +160,25 @@ to show-clusters
     ;; give all patches in the chosen patch's cluster
     ;; the same label
     ask p
-    [ ask patches with [cluster = [cluster] of myself and patchState = 1]
-      [ set plabel counter ] ]
+    [ set visited 0
+      ask patches with [cluster = [cluster] of myself and patchState = 1]
+      [ set plabel counter] ]
     set counter2 0
-    loop[
-      let q one-of patches with [visited = 0 and plabel = counter]
-      set visited o1
-      if q = nobody [stop]
-
-        set counter2 counter2 + 1
-    ] ;;hier ins array packen
+    count-cluster-patches
+    if counter > 0
+    [
+      array:set a counter - 1 counter2]
+    print a
     set counter counter + 1 ]
+end
 
+to count-cluster-patches
+  loop[
+      let q one-of patches with [visited = 0 and plabel = counter]
+      if q = nobody [ stop ]
+      ask q [set visited 1
+      set counter2 counter2 + 1]
+    ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -238,7 +251,7 @@ grazing-pressure
 grazing-pressure
 3
 50
-28.0
+0.0
 1
 1
 NIL
@@ -253,7 +266,7 @@ seed-production-per-patch
 seed-production-per-patch
 1
 20
-5.0
+0.0
 1
 1
 NIL
@@ -268,7 +281,7 @@ local-positive-interaction
 local-positive-interaction
 0
 100
-43.0
+0.0
 1
 1
 NIL
@@ -283,7 +296,7 @@ germination-probability
 germination-probability
 1
 100
-50.0
+0.0
 1
 1
 NIL
@@ -343,10 +356,10 @@ count patches with [pcolor = grey]
 11
 
 MONITOR
-731
-348
-847
-393
+714
+334
+830
+379
 number of clusters
 counter
 17
