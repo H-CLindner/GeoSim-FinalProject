@@ -62,8 +62,8 @@ to go
   [if patchState = 1
     [dispersal]]
   regenerate
+  set a array:from-list n-values 1 [0]
   find-clusters
-  set a array:from-list n-values counter [0]
   tick
 end
 
