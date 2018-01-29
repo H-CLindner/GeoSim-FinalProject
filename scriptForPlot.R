@@ -18,8 +18,8 @@ numbersAggregated = count(numbersOrdered$numbersReady)
 
 colnames(numbersAggregated) = c("value", "sum")
 
-numbersAggregated = numbersAggregated[, c(2,1)]
+#numbersAggregated = numbersAggregated[, c(2,1)]
 
-numbersLog = log(numbersAggregated, 2)
+numbersLog = log(numbersAggregated, 10)
 
 plot(numbersLog)
