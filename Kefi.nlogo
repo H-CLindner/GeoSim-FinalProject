@@ -151,7 +151,8 @@ to show-clusters
   set counter 0
   ask patches
     [set plabel ""
-     set plabel-color red]
+     set plabel-color red
+     set visited 0]
   loop
   [ ;; pick a random patch we haven't labeled yet
     let p one-of patches with [plabel = "" and patchState = 1]
@@ -160,14 +161,12 @@ to show-clusters
     ;; give all patches in the chosen patch's cluster
     ;; the same label
     ask p
-    [ set visited 0
+    [
       ask patches with [cluster = [cluster] of myself and patchState = 1]
       [ set plabel counter] ]
     set counter2 0
     count-cluster-patches
-    if counter > 0
-    [
-      array:set a counter - 1 counter2]
+    array:set a counter counter2
     print a
     set counter counter + 1 ]
 end
@@ -195,8 +194,8 @@ GRAPHICS-WINDOW
 1
 1
 0
-1
-1
+0
+0
 1
 -16
 16
@@ -232,7 +231,7 @@ BUTTON
 56
 NIL
 go
-NIL
+T
 1
 T
 OBSERVER
@@ -251,7 +250,7 @@ grazing-pressure
 grazing-pressure
 3
 50
-0.0
+34.0
 1
 1
 NIL
@@ -266,7 +265,7 @@ seed-production-per-patch
 seed-production-per-patch
 1
 20
-0.0
+5.0
 1
 1
 NIL
@@ -281,22 +280,22 @@ local-positive-interaction
 local-positive-interaction
 0
 100
-0.0
+58.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-7
-206
-184
-239
+9
+205
+186
+238
 germination-probability
 germination-probability
 1
 100
-0.0
+50.0
 1
 1
 NIL
