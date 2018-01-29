@@ -151,7 +151,7 @@ to show-clusters
   set counter 0
   ask patches
     [set plabel ""
-     set plabel-color green]
+     set plabel-color red]
   loop
   [ ;; pick a random patch we haven't labeled yet
     let p one-of patches with [plabel = "" and patchState = 1]
